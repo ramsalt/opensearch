@@ -44,14 +44,15 @@ RUN set -ex; \
 
 COPY opensearch-1.3.9-linux-x64.tar.gz /tmp/es.tar.gz
 
-RUN es_url="https://artifacts.opensearch.org/releases/bundle/opensearch/${OPENSEARCH_VER}/opensearch-${OPENSEARCH_VER}"; \
+RUN set -ex; \
+    es_url="https://artifacts.opensearch.org/releases/bundle/opensearch/${OPENSEARCH_VER}/opensearch-${OPENSEARCH_VER}"; \
     [[ $(compare_semver "${OPENSEARCH_VER}" "1.3") == 0 ]] && es_url="${es_url}-linux-x64"; \
     es_url="${es_url}.tar.gz"; \
     \
     cd /tmp; \
     [ -f es.tar.gz ] || curl -o es.tar.gz -Lskj "${es_url}"; \
-    curl -o es.tar.gz.asc -Lskj "${es_url}.asc"; \
-    GPG_KEYS=C5B7498965EFD1C2924BA9D539D319879310D3FC gpg_verify /tmp/es.tar.gz.asc /tmp/es.tar.gz; \
+    curl -o es.tar.gz.sig -Lskj "${es_url}.sig"; \
+    GPG_KEYS=C5B7498965EFD1C2924BA9D539D319879310D3FC gpg_verify /tmp/es.tar.gz.sig /tmp/es.tar.gz; \
     \
     mkdir -p /usr/share/opensearch/data /usr/share/opensearch/logs; \
     # https://github.com/elastic/opensearch/issues/49417#issuecomment-557265783
