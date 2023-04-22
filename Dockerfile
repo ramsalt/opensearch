@@ -40,16 +40,18 @@ RUN set -ex; \
     cd /tmp/alpine; \
     latest=$(git describe --abbrev=0 --tags); \
     git checkout "${latest}"; \
-    mv /tmp/alpine/bin/* /usr/local/bin; \
-    \
-    es_url="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ELASTICSEARCH_VER}"; \
-    [[ $(compare_semver "${ELASTICSEARCH_VER}" "7.0") == 0 ]] && es_url="${es_url}-linux-x86_64"; \
+    mv /tmp/alpine/bin/* /usr/local/bin;
+
+COPY opensearch-1.3.9-linux-x64.tar.gz /tmp/es.tar.gz
+
+RUN es_url="https://artifacts.opensearch.org/releases/bundle/opensearch/${ELASTICSEARCH_VER}/opensearch-${ELASTICSEARCH_VER}"; \
+    [[ $(compare_semver "${ELASTICSEARCH_VER}" "1.3") == 0 ]] && es_url="${es_url}-linux-x64"; \
     es_url="${es_url}.tar.gz"; \
     \
     cd /tmp; \
-    curl -o es.tar.gz -Lskj "${es_url}"; \
+    [ -f es.tar.gz ] || curl -o es.tar.gz -Lskj "${es_url}"; \
     curl -o es.tar.gz.asc -Lskj "${es_url}.asc"; \
-    GPG_KEYS=46095ACC8548582C1A2699A9D27D666CD88E42B4 gpg_verify /tmp/es.tar.gz.asc /tmp/es.tar.gz; \
+    GPG_KEYS=C5B7498965EFD1C2924BA9D539D319879310D3FC gpg_verify /tmp/es.tar.gz.asc /tmp/es.tar.gz; \
     \
     mkdir -p /usr/share/elasticsearch/data /usr/share/elasticsearch/logs; \
     # https://github.com/elastic/elasticsearch/issues/49417#issuecomment-557265783
@@ -70,6 +72,8 @@ RUN set -ex; \
 # We have to use root as default user to update ulimit.
 #USER 1000
 
+RUN apk add --no-cache openssl
+
 WORKDIR /usr/share/elasticsearch
 
 VOLUME /usr/share/elasticsearch/data
@@ -78,8 +82,17 @@ COPY templates /etc/gotpl/
 COPY config /usr/share/elasticsearch/config/
 COPY bin /usr/local/bin/
 
+USER 1000
+
+RUN cd config; \
+    ls /usr/bin; \
+    generate_certificates.sh; \
+    ls -alh /usr/share/elasticsearch/config/
+
+USER 0
+
 EXPOSE 9200 9300
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
-CMD ["elasticsearch"]
+CMD ["opensearch"]
