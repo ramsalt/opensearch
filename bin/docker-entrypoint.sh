@@ -31,7 +31,7 @@ process_templates() {
         fi
     fi
 
-    gotpl "/etc/gotpl/opensearch${ELASTICSEARCH_VER:0:1}.yml.tmpl" > /usr/share/opensearch/config/opensearch.yml
+    gotpl "/etc/gotpl/opensearch${OPENSEARCH_VER:0:1}.yml.tmpl" > /usr/share/opensearch/config/opensearch.yml
 }
 
 # The virtual file /proc/self/cgroup should list the current cgroup
