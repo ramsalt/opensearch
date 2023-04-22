@@ -40,11 +40,7 @@ RUN set -ex; \
     cd /tmp/alpine; \
     latest=$(git describe --abbrev=0 --tags); \
     git checkout "${latest}"; \
-    mv /tmp/alpine/bin/* /usr/local/bin;
-
-COPY opensearch-1.3.9-linux-x64.tar.gz /tmp/es.tar.gz
-
-RUN set -ex; \
+    mv /tmp/alpine/bin/* /usr/local/bin; \
     es_url="https://artifacts.opensearch.org/releases/bundle/opensearch/${OPENSEARCH_VER}/opensearch-${OPENSEARCH_VER}"; \
     [[ $(compare_semver "${OPENSEARCH_VER}" "1.3") == 0 ]] && es_url="${es_url}-linux-x64"; \
     es_url="${es_url}.tar.gz"; \
