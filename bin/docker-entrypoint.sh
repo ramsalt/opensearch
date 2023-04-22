@@ -6,16 +6,16 @@ if [[ -n "${DEBUG}" ]]; then
     set -x
 fi
 
-if [[ "${ES_BOOTSTRAP_MEMORY_LOCK:-true}" == "true" ]]; then
+if [[ "${OS_BOOTSTRAP_MEMORY_LOCK:-true}" == "true" ]]; then
     ulimit -l unlimited
 fi
 
 install_plugins() {
-    if [[ -n "${ES_PLUGINS_INSTALL}" ]]; then
-       IFS=',' read -r -a plugins <<< "${ES_PLUGINS_INSTALL}"
+    if [[ -n "${OS_PLUGINS_INSTALL}" ]]; then
+       IFS=',' read -r -a plugins <<< "${OS_PLUGINS_INSTALL}"
        for plugin in "${plugins[@]}"; do
-          if ! elasticsearch-plugin list | grep -qs "${plugin}"; then
-             yes | elasticsearch-plugin install --batch "${plugin}"
+          if ! opensearch-plugin list | grep -qs "${plugin}"; then
+             yes | opensearch-plugin install --batch "${plugin}"
           fi
        done
     fi
@@ -24,14 +24,14 @@ install_plugins() {
 process_templates() {
     # Get value for shard allocation awareness attributes.
     # https://www.elastic.co/guide/en/elasticsearch/reference/current/allocation-awareness.html#CO287-1
-    if [[ -n "${ES_SHARD_ALLOCATION_AWARENESS_ATTR_FILEPATH}" && -n "${ES_SHARD_ALLOCATION_AWARENESS_ATTR}" ]]; then
+    if [[ -n "${OS_SHARD_ALLOCATION_AWARENESS_ATTR_FILEPATH}" && -n "${OS_SHARD_ALLOCATION_AWARENESS_ATTR}" ]]; then
         if [[ "${NODE_DATA:-true}" == "true" ]]; then
-            export ES_SHARD_ATTR=$(cat "${ES_SHARD_ALLOCATION_AWARENESS_ATTR_FILEPATH}")
-            export ES_NODE_NAME="${ES_SHARD_ATTR}-${ES_NODE_NAME}"
+            export OS_SHARD_ATTR=$(cat "${OS_SHARD_ALLOCATION_AWARENESS_ATTR_FILEPATH}")
+            export OS_NODE_NAME="${OS_SHARD_ATTR}-${OS_NODE_NAME}"
         fi
     fi
 
-    gotpl "/etc/gotpl/elasticsearch${ELASTICSEARCH_VER:0:1}.yml.tmpl" > /usr/share/elasticsearch/config/opensearch.yml
+    gotpl "/etc/gotpl/opensearch${ELASTICSEARCH_VER:0:1}.yml.tmpl" > /usr/share/opensearch/config/opensearch.yml
 }
 
 # The virtual file /proc/self/cgroup should list the current cgroup
@@ -46,15 +46,15 @@ process_templates() {
 # es.cgroups.hierarchy.override. Therefore, we set this value here so
 # that cgroup statistics are available for the container this process
 # will run in.
-export ES_JAVA_OPTS="-Des.cgroups.hierarchy.override=/ $ES_JAVA_OPTS"
+export OS_JAVA_OPTS="-Des.cgroups.hierarchy.override=/ $OS_JAVA_OPTS"
 
 # Generate random node name if not set.
-if [[ -z "${ES_NODE_NAME}" ]]; then
-	export ES_NODE_NAME=$(uuidgen)
+if [[ -z "${OS_NODE_NAME}" ]]; then
+	export OS_NODE_NAME=$(uuidgen)
 fi
 
 # Fix volume permissions.
-chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data
+chown -R opensearch:opensearch /usr/share/opensearch/data
 
 install_plugins
 process_templates
@@ -62,7 +62,7 @@ process_templates
 exec_init_scripts
 
 if [[ "${1}" == 'make' ]]; then
-    su-exec elasticsearch "${@}" -f /usr/local/bin/actions.mk
+    su-exec opensearch "${@}" -f /usr/local/bin/actions.mk
 else
-    su-exec elasticsearch "${@}"
+    su-exec opensearch "${@}"
 fi

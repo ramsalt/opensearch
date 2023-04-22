@@ -14,8 +14,8 @@ fi
 cid="$(docker run -d --name "${NAME}" --cap-add SYS_RESOURCE "${IMAGE}")"
 trap "docker rm -vf $cid > /dev/null" EXIT
 
-elasticsearch() {
-	docker run --rm -i --link "${NAME}":"elasticsearch" --cap-add SYS_RESOURCE "${IMAGE}" "${@}" host="elasticsearch"
+opensearch() {
+	docker run --rm -i --link "${NAME}":"opensearch" --cap-add SYS_RESOURCE "${IMAGE}" "${@}" host="opensearch"
 }
 
-elasticsearch make check-ready wait_seconds=5 max_try=12 delay_seconds=20
+opensearch make check-ready wait_seconds=5 max_try=12 delay_seconds=20

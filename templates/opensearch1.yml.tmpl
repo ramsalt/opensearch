@@ -1,0 +1,46 @@
+cluster:
+  name: {{ getenv "OS_CLUSTER_NAME" "opensearch-default" }}
+
+node:
+  master: {{ getenv "OS_NODE_MASTER" "true" }}
+  name: {{ getenv "OS_NODE_NAME" "true" }}
+  data: {{ getenv "OS_NODE_DATA" "true" }}
+  ingest: {{ getenv "OS_NODE_INGEST" "true" }}
+  max_local_storage_nodes: {{ getenv "OS_NODE_MAX_LOCAL_STORAGE_NODES" "1" }}
+network.host: {{ getenv "OS_NETWORK_HOST" "0.0.0.0" }}
+
+bootstrap:
+  memory_lock: {{ getenv "OS_BOOTSTRAP_MEMORY_LOCK" "true" }}
+
+transport:
+  host: {{ getenv "OS_TRANSPORT_HOST" "localhost" }}
+
+http:
+  compression: {{ getenv "OS_HTTP_COMPRESSION" "true" }}
+  cors:
+    enabled: {{ getenv "OS_HTTP_CORS_ENABLED" "true" }}
+    allow-origin: "{{ getenv "OS_HTTP_CORS_ALLOW_ORIGIN" "*" }}"
+
+{{ if (getenv "OS_SHARD_ALLOCATION_AWARENESS_ATTR") }}
+{{ if (getenv "OS_SHARD_ATTR") }}
+node.attr.{{ getenv "OS_SHARD_ALLOCATION_AWARENESS_ATTR" }}: {{ getenv "OS_SHARD_ATTR" }}
+{{ end }}
+
+{{ $node_master := (getenv "OS_NODE_MASTER" "true") }}
+{{ if (eq $node_master "true") }}
+cluster.routing.allocation.awareness.attributes: {{ getenv "OS_SHARD_ALLOCATION_AWARENESS_ATTR" }}
+{{ end }}
+{{ end }}
+
+plugins.security.ssl.transport.pemcert_filepath: node1.pem
+plugins.security.ssl.transport.pemkey_filepath: node1-key.pem
+plugins.security.ssl.transport.pemtrustedcas_filepath: root-ca.pem
+plugins.security.ssl.transport.enforce_hostname_verification: false
+plugins.security.ssl.http.pemcert_filepath: node1.pem
+plugins.security.ssl.http.pemkey_filepath: node1-key.pem
+plugins.security.ssl.http.pemtrustedcas_filepath: root-ca.pem
+plugins.security.authcz.admin_dn:
+  - 'CN=A,OU=UNIT,O=ORG,L=TORONTO,ST=ONTARIO,C=CA'
+plugins.security.nodes_dn:
+  - 'CN=node1.dns.a-record,OU=UNIT,O=ORG,L=TORONTO,ST=ONTARIO,C=CA'
+plugins.security.allow_default_init_securityindex: true

@@ -2,15 +2,15 @@ ARG BASE_IMAGE_TAG
 
 FROM eclipse-temurin:${BASE_IMAGE_TAG}
 
-ARG ELASTICSEARCH_VER
+ARG OPENSEARCH_VER
 
-ENV ELASTICSEARCH_VER="${ELASTICSEARCH_VER}" \
-    ES_JAVA_OPTS="-Xms1g -Xmx1g" \
-    ES_TMPDIR="/tmp" \
+ENV OPENSEARCH_VER="${OPENSEARCH_VER}" \
+    OS_JAVA_OPTS="-Xms1g -Xmx1g" \
+    OS_TMPDIR="/tmp" \
     \
     LANG="C.UTF-8" \
     \
-    PATH="${PATH}:/usr/share/elasticsearch/bin"
+    PATH="${PATH}:/usr/share/opensearch/bin"
 
 RUN set -ex; \
     { \
@@ -21,9 +21,9 @@ RUN set -ex; \
 	} > /usr/local/bin/docker-java-home; \
 	chmod +x /usr/local/bin/docker-java-home; \
     \
-    addgroup -g 1000 -S elasticsearch; \
-    adduser -u 1000 -D -S -s /bin/bash -G elasticsearch elasticsearch; \
-    echo "PS1='\w\$ '" >> /home/elasticsearch/.bashrc; \
+    addgroup -g 1000 -S opensearch; \
+    adduser -u 1000 -D -S -s /bin/bash -G opensearch opensearch; \
+    echo "PS1='\w\$ '" >> /home/opensearch/.bashrc; \
     \
     apk add --update --no-cache -t .es-rundeps \
         bash \
@@ -44,8 +44,8 @@ RUN set -ex; \
 
 COPY opensearch-1.3.9-linux-x64.tar.gz /tmp/es.tar.gz
 
-RUN es_url="https://artifacts.opensearch.org/releases/bundle/opensearch/${ELASTICSEARCH_VER}/opensearch-${ELASTICSEARCH_VER}"; \
-    [[ $(compare_semver "${ELASTICSEARCH_VER}" "1.3") == 0 ]] && es_url="${es_url}-linux-x64"; \
+RUN es_url="https://artifacts.opensearch.org/releases/bundle/opensearch/${OPENSEARCH_VER}/opensearch-${OPENSEARCH_VER}"; \
+    [[ $(compare_semver "${OPENSEARCH_VER}" "1.3") == 0 ]] && es_url="${es_url}-linux-x64"; \
     es_url="${es_url}.tar.gz"; \
     \
     cd /tmp; \
@@ -53,17 +53,16 @@ RUN es_url="https://artifacts.opensearch.org/releases/bundle/opensearch/${ELASTI
     curl -o es.tar.gz.asc -Lskj "${es_url}.asc"; \
     GPG_KEYS=C5B7498965EFD1C2924BA9D539D319879310D3FC gpg_verify /tmp/es.tar.gz.asc /tmp/es.tar.gz; \
     \
-    mkdir -p /usr/share/elasticsearch/data /usr/share/elasticsearch/logs; \
-    # https://github.com/elastic/elasticsearch/issues/49417#issuecomment-557265783
+    mkdir -p /usr/share/opensearch/data /usr/share/opensearch/logs; \
+    # https://github.com/elastic/opensearch/issues/49417#issuecomment-557265783
     if tar tf es.tar.gz | head -n 1 | grep -q '^./$'; then \
         STRIP_COMPONENTS_COUNT=2; \
     else \
         STRIP_COMPONENTS_COUNT=1; \
     fi; \
-    tar zxf es.tar.gz --strip-components=$STRIP_COMPONENTS_COUNT -C /usr/share/elasticsearch; \
+    tar zxf es.tar.gz --strip-components=$STRIP_COMPONENTS_COUNT -C /usr/share/opensearch; \
     \
-    rm -rf /usr/share/elasticsearch/modules/x-pack-ml/platform/linux-x86_64; \
-    chown -R elasticsearch:elasticsearch /usr/share/elasticsearch; \
+    chown -R opensearch:opensearch /usr/share/opensearch; \
     \
     apk del --purge .es-build-deps; \
     rm -rf /tmp/*; \
@@ -74,12 +73,12 @@ RUN es_url="https://artifacts.opensearch.org/releases/bundle/opensearch/${ELASTI
 
 RUN apk add --no-cache openssl
 
-WORKDIR /usr/share/elasticsearch
+WORKDIR /usr/share/opensearch
 
-VOLUME /usr/share/elasticsearch/data
+VOLUME /usr/share/opensearch/data
 
 COPY templates /etc/gotpl/
-COPY config /usr/share/elasticsearch/config/
+COPY config /usr/share/opensearch/config/
 COPY bin /usr/local/bin/
 
 USER 1000
@@ -87,7 +86,7 @@ USER 1000
 RUN cd config; \
     ls /usr/bin; \
     generate_certificates.sh; \
-    ls -alh /usr/share/elasticsearch/config/
+    ls -alh /usr/share/opensearch/config/
 
 USER 0
 
