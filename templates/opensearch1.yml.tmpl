@@ -40,9 +40,9 @@ plugins.security.ssl.http.pemcert_filepath: node1.pem
 plugins.security.ssl.http.pemkey_filepath: node1-key.pem
 plugins.security.ssl.http.pemtrustedcas_filepath: root-ca.pem
 plugins.security.authcz.admin_dn:
-  - 'CN=A,OU=UNIT,O=ORG,L=TORONTO,ST=ONTARIO,C=CA'
+  - 'CN=A,OU=UNIT,O=ORG,L=Tromso,ST=Troms og Finnmark,C=NO'
 plugins.security.nodes_dn:
-  - 'CN=node1.dns.a-record,OU=UNIT,O=ORG,L=TORONTO,ST=ONTARIO,C=CA'
+  - 'CN=node1.dns.a-record,OU=UNIT,O=ORG,L=Tromso,ST=Troms og Finnmark,C=NO'
 plugins.security.allow_default_init_securityindex: true
 
 opensearch_security.openid.connect_url: "{{ getenv "OIDC_CONNECT_URL" }}"
