@@ -44,3 +44,8 @@ plugins.security.authcz.admin_dn:
 plugins.security.nodes_dn:
   - 'CN=node1.dns.a-record,OU=UNIT,O=ORG,L=TORONTO,ST=ONTARIO,C=CA'
 plugins.security.allow_default_init_securityindex: true
+
+opensearch_security.openid.connect_url: "{{ getenv "OIDC_CONNECT_URL" }}"
+opensearch_security.openid.client_id: "{{ getenv "OIDC_CLIENT_ID" }}"
+opensearch_security.openid.client_secret: "{{ getenv "OIDC_CLIENT_SECRET" }}"
+opensearch_security.openid.base_redirect_url: "{{ getenv "DASHBOARDS_ENDPOINT_URL" }}"
