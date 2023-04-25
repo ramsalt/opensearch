@@ -44,3 +44,26 @@ plugins.security.authcz.admin_dn:
 plugins.security.nodes_dn:
   - 'CN=node1.dns.a-record,OU=UNIT,O=ORG,L=Tromso,ST=Troms og Finnmark,C=NO'
 plugins.security.allow_default_init_securityindex: true
+
+basic_internal_auth_domain:
+  http_enabled: true
+  transport_enabled: true
+  order: 0
+  http_authenticator:
+    type: basic
+    challenge: false
+  authentication_backend:
+    type: internal
+openid_auth_domain:
+  http_enabled: true
+  transport_enabled: true
+  order: 1
+  http_authenticator:
+    type: openid
+    challenge: false
+    config:
+      subject_key: preferred_username
+      roles_key: roles
+      openid_connect_url: "{{ getenv "OIDC_CONNECT_URL" }}"
+  authentication_backend:
+    type: noop
