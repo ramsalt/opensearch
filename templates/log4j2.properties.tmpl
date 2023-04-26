@@ -7,3 +7,8 @@ appender.console.layout.pattern = [%d{ISO8601}][%-5p][%-25c{1.}] %marker%m%n
 
 rootLogger.level = info
 rootLogger.appenderRef.console.ref = console
+
+{{- if eq (getenv "OIDC_DEBUG") "1" }}
+logger.securityjwt.name = com.google.dlic.auth.http.jwt
+logger.securityjwt.level = debug
+{{- end }}

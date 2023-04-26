@@ -33,6 +33,7 @@ process_templates() {
 
     gotpl "/etc/gotpl/opensearch${OPENSEARCH_VER:0:1}.yml.tmpl" > /usr/share/opensearch/config/opensearch.yml
     gotpl "/etc/gotpl/security.yml.tmpl" > /usr/share/opensearch/plugins/opensearch-security/securityconfig/config.yml
+    gotpl "/etc/gotpl/log4j2.properties.tmpl" > /usr/share/opensearch/config/log4j2.properties
 }
 
 # The virtual file /proc/self/cgroup should list the current cgroup
