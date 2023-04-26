@@ -114,8 +114,7 @@ config:
           type: openid
           challenge: false
           config:
-            subject_key: sub
-            roles_key: groups
+            subject_key: email
             openid_connect_url: "{{ getenv "OIDC_CONNECT_URL" "https://accounts.google.com/.well-known/openid-configuration" }}"
         authentication_backend:
           type: noop
