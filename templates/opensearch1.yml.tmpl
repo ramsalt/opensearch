@@ -32,7 +32,9 @@ cluster.routing.allocation.awareness.attributes: {{ getenv "OS_SHARD_ALLOCATION_
 {{ end }}
 {{ end }}
 
-reindex.remote.whitelist: elasticsearch.dev.central-logging.ramsalt.wod.by:80
+{{- if getenv "OS_REINDEX_REMOTE_WHITELIST" }}
+reindex.remote.whitelist: {{ getenv "OS_REINDEX_REMOTE_WHITELIST" }}
+{{- end }}
 
 plugins.security.restapi.roles_enabled: [ "all_access" ]
 
