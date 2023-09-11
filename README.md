@@ -60,3 +60,26 @@ default params values:
 ## Deployment
 
 Deploy Opensearch with Opensearch-Dashboards to your own server via [![Wodby](https://www.google.com/s2/favicons?domain=wodby.com) Wodby](https://wodby.com/stacks/opensearch).
+
+## Upgrading
+
+To upgrade the underlying version of Opensearch, edit `version` and `tags` in `.github/workflows/workflow.yml`:
+
+```
+     - uses: actions/checkout@v2
+     - uses: ./.github/actions
+       with:
+        version: '1.3.12'
+        tags: 1.3.12,1.3,1,latest
+```
+
+To finalize the release, add an increasing stability tag:
+
+```
+git commit -m "Upgrade Opensearch to 1.3.12" .
+git tag -m "Upgrade Opensearch to 1.3.12" 1.0.9
+git push && git push --tags
+
+```
+
+The resulting image will be available as `ghcr.io/ramsalt/opensearch:1.3.12-1.0.9'
