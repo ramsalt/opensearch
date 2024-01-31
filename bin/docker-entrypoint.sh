@@ -32,8 +32,8 @@ process_templates() {
     fi
 
     gotpl "/etc/gotpl/opensearch${OPENSEARCH_VER:0:1}.yml.tmpl" > /usr/share/opensearch/config/opensearch.yml
-    gotpl "/etc/gotpl/security.yml.tmpl" > /usr/share/opensearch/plugins/opensearch-security/securityconfig/config.yml
-    gotpl "/etc/gotpl/roles_mapping.yml.tmpl" > /usr/share/opensearch/plugins/opensearch-security/securityconfig/roles_mapping.yml
+    gotpl "/etc/gotpl/security.yml.tmpl" > /usr/share/opensearch/config/opensearch-security/config.yml
+    gotpl "/etc/gotpl/roles_mapping.yml.tmpl" > /usr/share/opensearch/config/opensearch-security/roles_mapping.yml
     gotpl "/etc/gotpl/log4j2.properties.tmpl" > /usr/share/opensearch/config/log4j2.properties
 }
 
