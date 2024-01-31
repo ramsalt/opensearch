@@ -3,7 +3,7 @@
 OPENSEARCH_VER ?= 2.11.1
 OPENSEARCH_MINOR_VER=$(shell echo "${OPENSEARCH_VER}" | grep -oE '^[0-9]+\.[0-9]+')
 
-OPENJDK_VER ?= 11
+OPENJDK_VER ?= 17
 BASE_IMAGE_TAG ?= $(OPENJDK_VER)-jre-alpine
 
 # Remove minor version from tag
