@@ -50,7 +50,7 @@ RUN set -ex; \
     curl -o es.tar.gz.sig -Lskj "${es_url}.sig"; \
     GPG_KEYS=C5B7498965EFD1C2924BA9D539D319879310D3FC gpg_verify /tmp/es.tar.gz.sig /tmp/es.tar.gz; \
     \
-    mkdir -p /usr/share/opensearch/data /usr/share/opensearch/logs; \
+    mkdir -p /usr/share/opensearch/data /usr/share/opensearch/logs /snapshots; \
     # https://github.com/elastic/opensearch/issues/49417#issuecomment-557265783
     if tar tf es.tar.gz | head -n 1 | grep -q '^./$'; then \
         STRIP_COMPONENTS_COUNT=2; \
