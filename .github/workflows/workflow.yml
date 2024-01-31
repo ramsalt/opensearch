@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - opensearch
+    - opensearch-1.x
 
     tags:
     - '*'
