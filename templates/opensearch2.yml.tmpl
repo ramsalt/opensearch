@@ -1,12 +1,47 @@
 cluster:
   name: {{ getenv "OS_CLUSTER_NAME" "opensearch-default" }}
 
+{{ if (getenv "OS_STORAGE_TEMP") }}
+node.attr.temp: {{ getenv "OS_STORAGE_TEMP" }}
+
+{{/* hot node gets configured normally */}}
+{{ if (eq (getenv "OS_STORAGE_TEMP") "hot") }}
+node:
+  master: {{ getenv "OS_NODE_MASTER" "true" }}
+  name: {{ getenv "OS_NODE_NAME" "opensearch" }}
+  data: {{ getenv "OS_NODE_DATA" "true" }}
+  ingest: {{ getenv "OS_NODE_INGEST" "true" }}
+  max_local_storage_nodes: {{ getenv "OS_NODE_MAX_LOCAL_STORAGE_NODES" "1" }}
+
+cluster.initial_cluster_manager_nodes: ["{{ getenv "OS_NODE_NAME" "opensearch" }}"]
+
+{{/* non-hot node is a data-only node */}}
+{{ else }}
+node:
+  master: false
+  name: {{ getenv "OS_NODE_NAME" "true" }}
+  data: true
+  ingest: false
+  max_local_storage_nodes: {{ getenv "OS_NODE_MAX_LOCAL_STORAGE_NODES" "1" }}
+
+discovery:
+  seed_hosts: ["{{ getenv "OS_MANAGER_NODE" "opensearch" }}"]
+
+cluster.initial_cluster_manager_nodes: ["{{ getenv "OS_MANAGER_NODE" "opensearch" }}"]
+
+{{ end }}
+
+{{/* if we do not have a hot-warm setup, we configure everything as usual */}}
+{{ else }}
 node:
   master: {{ getenv "OS_NODE_MASTER" "true" }}
   name: {{ getenv "OS_NODE_NAME" "true" }}
   data: {{ getenv "OS_NODE_DATA" "true" }}
   ingest: {{ getenv "OS_NODE_INGEST" "true" }}
   max_local_storage_nodes: {{ getenv "OS_NODE_MAX_LOCAL_STORAGE_NODES" "1" }}
+
+{{ end }}
+
 network.host: {{ getenv "OS_NETWORK_HOST" "0.0.0.0" }}
 
 bootstrap:
@@ -30,10 +65,6 @@ node.attr.{{ getenv "OS_SHARD_ALLOCATION_AWARENESS_ATTR" }}: {{ getenv "OS_SHARD
 {{ if (eq $node_master "true") }}
 cluster.routing.allocation.awareness.attributes: {{ getenv "OS_SHARD_ALLOCATION_AWARENESS_ATTR" }}
 {{ end }}
-{{ end }}
-
-{{ if (getenv "OS_STORAGE_TEMP") }}
-node.attr.temp: {{ getenv "OS_STORAGE_TEMP" }}
 {{ end }}
 
 {{- if getenv "OS_REINDEX_REMOTE_WHITELIST" }}

@@ -41,6 +41,7 @@ Supported tags and respective `Dockerfile` links:
 | `OS_SHARD_ALLOCATION_AWARENESS_ATTR`          |                         |                                                |
 | `OS_STORAGE_TEMP`                             |                         | e.g. `warm` or `hot` for implementing a        |
 |                                               |                         | hot-warm architecture                          |
+| `OS_MANAGER_NODE`                             | `opensearch`            | manager node name for warm-storage nodes       |
 | `OS_TRANSPORT_HOST`                           | `localhost`             |                                                |
 
 ## Orchestration Actions
