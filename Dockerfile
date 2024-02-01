@@ -5,7 +5,7 @@ FROM eclipse-temurin:${BASE_IMAGE_TAG}
 ARG OPENSEARCH_VER
 
 ENV OPENSEARCH_VER="${OPENSEARCH_VER}" \
-    OS_JAVA_OPTS="-Xms1g -Xmx1g" \
+    OPENSEARCH_JAVA_OPTS="-Xms1g -Xmx1g" \
     OS_TMPDIR="/tmp" \
     \
     LANG="C.UTF-8" \
