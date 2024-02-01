@@ -32,6 +32,10 @@ cluster.routing.allocation.awareness.attributes: {{ getenv "OS_SHARD_ALLOCATION_
 {{ end }}
 {{ end }}
 
+{{ if (getenv "OS_STORAGE_TEMP") }}
+node.attr.temp: {{ getenv "OS_STORAGE_TEMP" }}
+{{ end }}
+
 {{- if getenv "OS_REINDEX_REMOTE_WHITELIST" }}
 reindex.remote.whitelist: {{ getenv "OS_REINDEX_REMOTE_WHITELIST" }}
 {{- end }}

@@ -39,6 +39,8 @@ Supported tags and respective `Dockerfile` links:
 | `OS_PLUGINS_INSTALL`                          |                         | Install specified plugins (separated by comma) |
 | `OS_SHARD_ALLOCATION_AWARENESS_ATTR_FILEPATH` |                         |                                                |
 | `OS_SHARD_ALLOCATION_AWARENESS_ATTR`          |                         |                                                |
+| `OS_STORAGE_TEMP`                             |                         | e.g. `warm` or `hot` for implementing a        |
+|                                               |                         | hot-warm architecture                          |
 | `OS_TRANSPORT_HOST`                           | `localhost`             |                                                |
 
 ## Orchestration Actions
