@@ -30,7 +30,7 @@ cluster.initial_cluster_manager_nodes: ["{{ getenv "OS_NODE_NAME" "opensearch" }
 {{ else }}
 node:
   master: false
-  name: {{ getenv "OS_NODE_NAME" "true" }}
+  name: {{ getenv "OS_NODE_NAME" "opensearch-warm-storage" }}
   data: true
   ingest: false
   max_local_storage_nodes: {{ getenv "OS_NODE_MAX_LOCAL_STORAGE_NODES" "1" }}

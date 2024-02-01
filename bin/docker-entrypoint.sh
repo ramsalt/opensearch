@@ -53,7 +53,18 @@ export OS_JAVA_OPTS="-Des.cgroups.hierarchy.override=/ $OS_JAVA_OPTS"
 
 # Generate random node name if not set.
 if [[ -z "${OS_NODE_NAME}" ]]; then
-	export OS_NODE_NAME=$(uuidgen)
+
+    if [[ -n "${OS_STORAGE_TEMP}" ]]; then
+
+        if [[ "${OS_STORAGE_TEMP}" == "hot" ]]; then
+            export OS_NODE_NAME=opensearch
+        else
+            export OS_NODE_NAME=opensearch-warm-storage
+        fi
+
+    else
+        export OS_NODE_NAME=$(uuidgen)
+    fi
 fi
 
 # Fix volume permissions.
