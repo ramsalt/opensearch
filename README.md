@@ -25,13 +25,14 @@ Supported tags and respective `Dockerfile` links:
 | Variable                                      | Default Value           | Description                                    |
 |-----------------------------------------------|-------------------------|------------------------------------------------|
 | `OS_BOOTSTRAP_MEMORY_LOCK`                    | `true`                  |                                                |
-| `OS_CLUSTER_NAME`                             | `opensearch-default` |                                                |
+| `OS_CLUSTER_NAME`                             | `opensearch-default`    |                                                |
 | `OS_DISCOVERY_ZEN_MINIMUM_MASTER_NODES`       | `1`                     | 6.x only                                       |
 | `OS_HTTP_CORS_ALLOW_ORIGIN`                   | `*`                     |                                                |
 | `OS_HTTP_CORS_ENABLED`                        | `true`                  |                                                |
 | `OS_HTTP_ENABLED`                             | `true`                  | 6.x only                                       |
-| `OS_JAVA_OPTS`                                | `-Xms1g -Xmx1g`         |                                                |
+| `OPENSEARCH_JAVA_OPTS`                        | `-Xms1g -Xmx1g`         |                                                |
 | `OS_NETWORK_HOST`                             | `0.0.0.0`               |                                                |
+| `OS_NODE_NAME`                                | random id               |                                                |
 | `OS_NODE_DATA`                                | `true`                  |                                                |
 | `OS_NODE_INGEST`                              | `true`                  |                                                |
 | `OS_NODE_MASTER`                              | `true`                  |                                                |
