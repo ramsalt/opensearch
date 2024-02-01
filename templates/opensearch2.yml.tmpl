@@ -1,10 +1,19 @@
 cluster:
   name: {{ getenv "OS_CLUSTER_NAME" "opensearch-default" }}
 
+{{/* ****************************************************************** */}}
+{{/*                    .    hot-warm setup                             */}}
+{{/* ****************************************************************** */}}
+
 {{ if (getenv "OS_STORAGE_TEMP") }}
 node.attr.temp: {{ getenv "OS_STORAGE_TEMP" }}
 
+transport:
+  host: {{ getenv "OS_TRANSPORT_HOST" "0.0.0.0" }}
+
+{{/* --------------------------------- */}}
 {{/* hot node gets configured normally */}}
+{{/* --------------------------------- */}}
 {{ if (eq (getenv "OS_STORAGE_TEMP") "hot") }}
 node:
   master: {{ getenv "OS_NODE_MASTER" "true" }}
@@ -15,7 +24,9 @@ node:
 
 cluster.initial_cluster_manager_nodes: ["{{ getenv "OS_NODE_NAME" "opensearch" }}"]
 
+{{/* --------------------------------- */}}
 {{/* non-hot node is a data-only node */}}
+{{/* --------------------------------- */}}
 {{ else }}
 node:
   master: false
@@ -31,7 +42,14 @@ cluster.initial_cluster_manager_nodes: ["{{ getenv "OS_MANAGER_NODE" "opensearch
 
 {{ end }}
 
-{{/* if we do not have a hot-warm setup, we configure everything as usual */}}
+{{/* ****************************************************************** */}}
+{{/*                         single-node setup                          */}}
+{{/* ****************************************************************** */}}
+
+{{/* ----------------------------------- */}}
+{{/* if we do not have a hot-warm setup, */}}
+{{/* we configure everything as usual    */}}
+{{/* ----------------------------------- */}}
 {{ else }}
 node:
   master: {{ getenv "OS_NODE_MASTER" "true" }}
@@ -40,15 +58,17 @@ node:
   ingest: {{ getenv "OS_NODE_INGEST" "true" }}
   max_local_storage_nodes: {{ getenv "OS_NODE_MAX_LOCAL_STORAGE_NODES" "1" }}
 
+transport:
+  host: {{ getenv "OS_TRANSPORT_HOST" "localhost" }}
+
 {{ end }}
+
+{{/* ****************************************************************** */}}
 
 network.host: {{ getenv "OS_NETWORK_HOST" "0.0.0.0" }}
 
 bootstrap:
   memory_lock: {{ getenv "OS_BOOTSTRAP_MEMORY_LOCK" "true" }}
-
-transport:
-  host: {{ getenv "OS_TRANSPORT_HOST" "localhost" }}
 
 http:
   compression: {{ getenv "OS_HTTP_COMPRESSION" "true" }}
