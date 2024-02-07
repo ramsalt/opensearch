@@ -82,20 +82,6 @@ config:
         ###### and here https://tools.ietf.org/html/rfc7239
         ###### and https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_IP_Valve
     authc:
-      kerberos_auth_domain:
-        http_enabled: false
-        transport_enabled: false
-        order: 6
-        http_authenticator:
-          type: kerberos
-          challenge: true
-          config:
-            # If true a lot of kerberos/security related debugging output will be logged to standard out
-            krb_debug: false
-            # If true then the realm will be stripped from the user name
-            strip_realm_from_principal: true
-        authentication_backend:
-          type: noop
       basic_internal_auth_domain:
         description: "Authenticate via HTTP Basic against internal users database"
         http_enabled: true
@@ -106,10 +92,34 @@ config:
           challenge: false
         authentication_backend:
           type: internal
+      saml_auth:
+        order: 1
+        description: "Google Workspace SAML"
+        http_enabled: true
+        transport_enabled: false
+        http_authenticator:
+          type: saml
+          challenge: true
+          config:
+            idp:
+              metadata_file: central-logging-google-idp-metadata.xml #SAML's metadata url, provided by your IdP
+              entity_id: {{ getenv "SAML_IDP_ENTITY_ID" "https://accounts.google.com/o/saml2?idpid=xxxyyyzzz" }} #SAML's IdP entity ID, provided by your IdP
+              enable_ssl_client_auth: true
+              pemcert_filepath: /srv/ssl/sp.crt
+              pemkey_filepath: /srv/ssl/sp.key
+            sp:
+              entity_id: {{ getenv "SAML_SP_ENTITY_ID" "opensearch-dashboards.example.com" }}
+              forceAuthn: true
+            kibana_url: {{ getenv "DASHBOARDS_ENDPOINT_URL" "https://opensearch-dashboards.example.com" }}
+            subject_key: NameID
+            roles_key: Groups
+            exchange_key: {{ getenv "SAML_EXCHANGE_KEY" "configure_exchange_key" }}
+        authentication_backend:
+          type: noop
       openid_auth_domain:
         http_enabled: true
         transport_enabled: true
-        order: 1
+        order: 2
         http_authenticator:
           type: openid
           challenge: false
@@ -118,78 +128,6 @@ config:
             openid_connect_url: "{{ getenv "OIDC_CONNECT_URL" "https://accounts.google.com/.well-known/openid-configuration" }}"
         authentication_backend:
           type: noop
-      proxy_auth_domain:
-        description: "Authenticate via proxy"
-        http_enabled: false
-        transport_enabled: false
-        order: 3
-        http_authenticator:
-          type: proxy
-          challenge: false
-          config:
-            user_header: "x-proxy-user"
-            roles_header: "x-proxy-roles"
-        authentication_backend:
-          type: noop
-      jwt_auth_domain:
-        description: "Authenticate via Json Web Token"
-        http_enabled: false
-        transport_enabled: false
-        order: 0
-        http_authenticator:
-          type: jwt
-          challenge: false
-          config:
-            signing_key: "base64 encoded HMAC key or public RSA/ECDSA pem key"
-            jwt_header: "Authorization"
-            jwt_url_parameter: null
-            jwt_clock_skew_tolerance_seconds: 30
-            roles_key: null
-            subject_key: null
-        authentication_backend:
-          type: noop
-      clientcert_auth_domain:
-        description: "Authenticate via SSL client certificates"
-        http_enabled: false
-        transport_enabled: false
-        order: 2
-        http_authenticator:
-          type: clientcert
-          config:
-            username_attribute: cn #optional, if omitted DN becomes username
-          challenge: false
-        authentication_backend:
-          type: noop
-      ldap:
-        description: "Authenticate via LDAP or Active Directory"
-        http_enabled: false
-        transport_enabled: false
-        order: 5
-        http_authenticator:
-          type: basic
-          challenge: false
-        authentication_backend:
-          # LDAP authentication backend (authenticate users against a LDAP or Active Directory)
-          type: ldap
-          config:
-            # enable ldaps
-            enable_ssl: false
-            # enable start tls, enable_ssl should be false
-            enable_start_tls: false
-            # send client certificate
-            enable_ssl_client_auth: false
-            # verify ldap hostname
-            verify_hostnames: true
-            hosts:
-            - localhost:8389
-            bind_dn: null
-            password: null
-            userbase: 'ou=people,dc=example,dc=com'
-            # Filter to search for users (currently in the whole subtree beneath userbase)
-            # {0} is substituted with the username
-            usersearch: '(sAMAccountName={0})'
-            # Use this attribute from the user as username (if not set then DN is used)
-            username_attribute: null
     authz:
       roles_from_myldap:
         description: "Authorize via LDAP or Active Directory"
