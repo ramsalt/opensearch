@@ -103,17 +103,17 @@ config:
           config:
             idp:
               metadata_file: central-logging-google-idp-metadata.xml #SAML's metadata url, provided by your IdP
-              entity_id: https://accounts.google.com/o/saml2?idpid=C03esjmtc #SAML's IdP entity ID, provided by your IdP
+              entity_id: {{ getenv "SAML_IDP_ENTITY_ID" "https://accounts.google.com/o/saml2?idpid=xxxyyyzzz" }} #SAML's IdP entity ID, provided by your IdP
               enable_ssl_client_auth: true
               pemcert_filepath: /srv/ssl/sp.crt
               pemkey_filepath: /srv/ssl/sp.key
             sp:
-              entity_id: logs.ramsalt.com
+              entity_id: {{ getenv "SAML_SP_ENTITY_ID" "opensearch-dashboards.example.com" }}
               forceAuthn: true
-            kibana_url: https://logs.ramsalt.com
+            kibana_url: {{ getenv "DASHBOARDS_ENDPOINT_URL" "https://opensearch-dashboards.example.com" }}
             subject_key: NameID
             roles_key: Groups
-            exchange_key: 387b9923000dfd3bdb4d4b8691f8d15a02829a2e573ae8300a4ea6695152cf38
+            exchange_key: {{ getenv "SAML_EXCHANGE_KEY" "configure_exchange_key" }}
         authentication_backend:
           type: noop
       openid_auth_domain:
