@@ -104,9 +104,6 @@ config:
             idp:
               metadata_file: central-logging-google-idp-metadata.xml #SAML's metadata url, provided by your IdP
               entity_id: {{ getenv "SAML_IDP_ENTITY_ID" "https://accounts.google.com/o/saml2?idpid=xxxyyyzzz" }} #SAML's IdP entity ID, provided by your IdP
-              enable_ssl_client_auth: true
-              pemcert_filepath: /srv/ssl/sp.crt
-              pemkey_filepath: /srv/ssl/sp.key
             sp:
               entity_id: {{ getenv "SAML_SP_ENTITY_ID" "opensearch-dashboards.example.com" }}
             kibana_url: {{ getenv "DASHBOARDS_ENDPOINT_URL" "https://opensearch-dashboards.example.com" }}
