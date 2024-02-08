@@ -107,8 +107,6 @@ config:
             sp:
               entity_id: {{ getenv "SAML_SP_ENTITY_ID" "opensearch-dashboards.example.com" }}
             kibana_url: {{ getenv "DASHBOARDS_ENDPOINT_URL" "https://opensearch-dashboards.example.com" }}
-            subject_key: NameID
-            roles_key: Groups
             exchange_key: {{ getenv "SAML_EXCHANGE_KEY" "configure_exchange_key" }}
         authentication_backend:
           type: noop
