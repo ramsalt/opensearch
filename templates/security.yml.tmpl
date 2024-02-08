@@ -102,7 +102,7 @@ config:
           challenge: true
           config:
             idp:
-              metadata_file: /srv/saml/central-logging-google-idp-metadata.xml #SAML's metadata url, provided by your IdP
+              metadata_file: saml/central-logging-google-idp-metadata.xml #SAML's metadata url, provided by your IdP
               entity_id: {{ getenv "SAML_IDP_ENTITY_ID" "https://accounts.google.com/o/saml2?idpid=xxxyyyzzz" }} #SAML's IdP entity ID, provided by your IdP
             sp:
               entity_id: {{ getenv "SAML_SP_ENTITY_ID" "opensearch-dashboards.example.com" }}
