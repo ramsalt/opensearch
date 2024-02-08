@@ -82,20 +82,6 @@ config:
         ###### and here https://tools.ietf.org/html/rfc7239
         ###### and https://tomcat.apache.org/tomcat-8.0-doc/config/valve.html#Remote_IP_Valve
     authc:
-      kerberos_auth_domain:
-        http_enabled: false
-        transport_enabled: false
-        order: 6
-        http_authenticator:
-          type: kerberos
-          challenge: true
-          config:
-            # If true a lot of kerberos/security related debugging output will be logged to standard out
-            krb_debug: false
-            # If true then the realm will be stripped from the user name
-            strip_realm_from_principal: true
-        authentication_backend:
-          type: noop
       basic_internal_auth_domain:
         description: "Authenticate via HTTP Basic against internal users database"
         http_enabled: true
@@ -142,19 +128,6 @@ config:
             openid_connect_url: "{{ getenv "OIDC_CONNECT_URL" "https://accounts.google.com/.well-known/openid-configuration" }}"
         authentication_backend:
           type: noop
-      proxy_auth_domain:
-        description: "Authenticate via proxy"
-        http_enabled: false
-        transport_enabled: false
-        order: 3
-        http_authenticator:
-          type: proxy
-          challenge: false
-          config:
-            user_header: "x-proxy-user"
-            roles_header: "x-proxy-roles"
-        authentication_backend:
-          type: noop
       jwt_auth_domain:
         description: "Authenticate via Json Web Token"
         http_enabled: false
@@ -176,7 +149,7 @@ config:
         description: "Authenticate via SSL client certificates"
         http_enabled: false
         transport_enabled: false
-        order: 2
+        order: 3
         http_authenticator:
           type: clientcert
           config:
@@ -184,36 +157,6 @@ config:
           challenge: false
         authentication_backend:
           type: noop
-      ldap:
-        description: "Authenticate via LDAP or Active Directory"
-        http_enabled: false
-        transport_enabled: false
-        order: 5
-        http_authenticator:
-          type: basic
-          challenge: false
-        authentication_backend:
-          # LDAP authentication backend (authenticate users against a LDAP or Active Directory)
-          type: ldap
-          config:
-            # enable ldaps
-            enable_ssl: false
-            # enable start tls, enable_ssl should be false
-            enable_start_tls: false
-            # send client certificate
-            enable_ssl_client_auth: false
-            # verify ldap hostname
-            verify_hostnames: true
-            hosts:
-            - localhost:8389
-            bind_dn: null
-            password: null
-            userbase: 'ou=people,dc=example,dc=com'
-            # Filter to search for users (currently in the whole subtree beneath userbase)
-            # {0} is substituted with the username
-            usersearch: '(sAMAccountName={0})'
-            # Use this attribute from the user as username (if not set then DN is used)
-            username_attribute: null
     authz:
       roles_from_myldap:
         description: "Authorize via LDAP or Active Directory"
