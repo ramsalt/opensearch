@@ -14,6 +14,6 @@ logger.securityjwt.level = debug
 {{- end }}
 
 {{- if eq (getenv "SAML_DEBUG") "1" }}
-logger.token.name = com.google.dlic.auth.http.saml.Token
+logger.token.name = com.amazon.dlic.auth.http.saml.Token
 logger.token.level = debug
 {{- end }}
