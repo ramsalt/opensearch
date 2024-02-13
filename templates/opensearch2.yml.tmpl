@@ -108,4 +108,6 @@ plugins.security.nodes_dn:
   - 'CN=node1.dns.a-record,OU=UNIT,O=ORG,L=Tromso,ST=Troms og Finnmark,C=NO'
 plugins.security.allow_default_init_securityindex: true
 
+plugins.query.datasources.encryption.masterkey: "{{ getenv "MASTERKEY" "MASTERKEY" }}"
+
 path.repo: ["/snapshots"]
