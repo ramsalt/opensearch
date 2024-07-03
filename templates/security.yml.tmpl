@@ -89,7 +89,7 @@ config:
         order: 0
         http_authenticator:
           type: basic
-          {{- and (eq (getenv SAML_IDP_ENTITY_ID) "") (eq (getenv OIDC_CONNECT_URL) "") }}
+          {{- if and (eq (getenv "SAML_IDP_ENTITY_ID") "") (eq (getenv "OIDC_CONNECT_URL") "") }}
           challenge: true
           {{- else }}
           challenge: false

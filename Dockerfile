@@ -10,7 +10,9 @@ ENV OPENSEARCH_VER="${OPENSEARCH_VER}" \
     \
     LANG="C.UTF-8" \
     \
-    PATH="${PATH}:/usr/share/opensearch/bin"
+    PATH="${PATH}:/usr/share/opensearch/bin" \
+    \
+    ADMIN_PASSWORD=admin
 
 RUN set -ex; \
     { \
