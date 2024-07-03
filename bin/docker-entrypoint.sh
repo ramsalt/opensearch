@@ -35,6 +35,10 @@ process_templates() {
     gotpl "/etc/gotpl/security.yml.tmpl" > /usr/share/opensearch/config/opensearch-security/config.yml
     gotpl "/etc/gotpl/roles_mapping.yml.tmpl" > /usr/share/opensearch/config/opensearch-security/roles_mapping.yml
     gotpl "/etc/gotpl/log4j2.properties.tmpl" > /usr/share/opensearch/config/log4j2.properties
+
+    ADMIN_HASH="$(bash plugins/opensearch-security/tools/hash.sh -env ADMIN_PASSWORD)" \
+    READONLY_HASH="$(bash plugins/opensearch-security/tools/hash.sh -env READONLY_PASSWORD)" \
+    gotpl "/etc/gotpl/internal_users.yml.tmpl" > /usr/share/opensearch/config/opensearch-security/internal_users.yml
 }
 
 # The virtual file /proc/self/cgroup should list the current cgroup
