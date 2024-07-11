@@ -105,8 +105,13 @@ config:
       saml_auth_domain:
         order: 1
         description: "Google Workspace SAML"
+        {{- if eq (getenv "SAML_IDP_ENTITY_ID") "" }}
+        http_enabled: false
+        transport_enabled: false
+        {{- else }}
         http_enabled: true
         transport_enabled: false
+       {{- end }}
         http_authenticator:
           type: saml
           challenge: true
@@ -122,8 +127,13 @@ config:
         authentication_backend:
           type: noop
       openid_auth_domain:
+        {{- if eq (getenv "OIDC_CONNECT_URL") "" }}
+        http_enabled: false
+        transport_enabled: false
+        {{- else }}
         http_enabled: true
         transport_enabled: true
+        {{- end }}
         order: 2
         http_authenticator:
           type: openid
