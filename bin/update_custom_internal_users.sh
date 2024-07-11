@@ -36,3 +36,29 @@ bash plugins/opensearch-security/tools/securityadmin.sh \
     -cert config/admin.pem \
     -key config/admin-key.pem \
     -t internalusers
+
+cat > config/opensearch-security/custom_roles.yml <<_EOF_
+---
+_meta:
+  type: "roles"
+  config_version: 2
+
+anonymous_users_role:
+  reserved: false
+  hidden: false
+  cluster_permissions:
+  - "OPENDISTRO_SECURITY_CLUSTER_COMPOSITE_OPS"
+  index_permissions:
+  - index_patterns:
+    - "registrations-*"
+    allowed_actions:
+    - "read"
+_EOF_
+
+bash plugins/opensearch-security/tools/securityadmin.sh \
+    -f config/opensearch-security/custom_roles.yml \
+    -icl -nhnv \
+    -cacert config/root-ca.pem \
+    -cert config/admin.pem \
+    -key config/admin-key.pem \
+    -t roles
