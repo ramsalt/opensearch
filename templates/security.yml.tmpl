@@ -114,7 +114,11 @@ config:
        {{- end }}
         http_authenticator:
           type: saml
+          {{- if eq (getenv "SAML_IDP_ENTITY_ID") "" }}
+          challenge: false
+          {{- else }}
           challenge: true
+          {{- end }}
           config:
             idp:
               metadata_file: saml/central-logging-google-idp-metadata.xml #SAML's metadata url, provided by your IdP
