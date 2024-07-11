@@ -8,7 +8,7 @@ _meta:
 
 # Define your internal users here
 
-dashboards:
+{{ getenv "READONLY_USER" "dashboards" }}:
     hash: "{{ getenv "READONLY_HASH" }}"
     reserved: true
     backend_roles:
