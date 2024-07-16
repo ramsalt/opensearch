@@ -15,7 +15,8 @@ ifneq ($(STABILITY_TAG),)
     endif
 endif
 
-REPO = ghcr.io/ramsalt/opensearch
+DOCKER_REGISTRY ?= ghcr.io
+REPO = ${DOCKER_REGISTRY}/ramsalt/opensearch
 NAME = opensearch-$(OPENSEARCH_MINOR_VER)
 
 .PHONY: build test push shell run start stop logs clean release
