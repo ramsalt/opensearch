@@ -14,6 +14,7 @@ ENV OPENSEARCH_VER="${OPENSEARCH_VER}" \
     \
     ADMIN_PASSWORD=admin \
     KIBANASERVER_PASSWORD=kibanaserver \
+    FLUENT_PASSWORD=kibanaserver \
     READONLY_PASSWORD=changeme
 
 RUN set -ex; \

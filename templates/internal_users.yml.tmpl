@@ -26,4 +26,11 @@ admin:
 kibanaserver:
   hash: "{{ getenv "KIBANASERVER_HASH" }}"
   reserved: true
-  description: "Demo OpenSearch Dashboards user"
+  description: "OpenSearch Dashboards user"
+
+fluent:
+  hash: "{{ getenv "FLUENT_HASH" }}"
+  reserved: false
+  backend_roles:
+  - "logstash"
+  description: "Fluntd log feeding user"

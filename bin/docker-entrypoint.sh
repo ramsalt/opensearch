@@ -40,6 +40,7 @@ process_templates() {
     ADMIN_HASH="$(bash plugins/opensearch-security/tools/hash.sh -env ADMIN_PASSWORD)" \
     READONLY_HASH="$(bash plugins/opensearch-security/tools/hash.sh -env READONLY_PASSWORD)" \
     KIBANASERVER_HASH="$(bash plugins/opensearch-security/tools/hash.sh -env KIBANASERVER_PASSWORD)" \
+    FLUENT_HASH="$(bash plugins/opensearch-security/tools/hash.sh -env FLUENT_PASSWORD)" \
     gotpl "/etc/gotpl/internal_users.yml.tmpl" > /usr/share/opensearch/config/opensearch-security/internal_users.yml
 }
 
