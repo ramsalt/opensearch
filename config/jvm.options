@@ -11,7 +11,7 @@
 ## -Xms4g
 ## -Xmx4g
 ##
-## See https://www.elastic.co/guide/en/elasticsearch/reference/current/heap-size.html
+## See https://opensearch.org/docs/opensearch/install/important-settings/
 ## for more information
 ##
 ################################################################
@@ -21,9 +21,8 @@
 
 # Commented out since these are supplied as env vars in the command-line
 # for the service.
-
-#-Xms2g
-#-Xmx2g
+#-Xms${heap.min}
+#-Xmx${heap.max}
 
 ################################################################
 ## Expert settings
@@ -36,43 +35,22 @@
 ################################################################
 
 ## GC configuration
+8-10:-XX:+UseConcMarkSweepGC
+8-10:-XX:CMSInitiatingOccupancyFraction=75
+8-10:-XX:+UseCMSInitiatingOccupancyOnly
 
-## optimizations
+## G1GC Configuration
+# NOTE: G1GC is the default GC for all JDKs 11 and newer
+11-:-XX:+UseG1GC
+# See https://github.com/elastic/elasticsearch/pull/46169 for the history
+# behind these settings, but the tl;dr is that default values can lead
+# to situations where heap usage grows enough to trigger a circuit breaker
+# before GC kicks in.
+11-:-XX:G1ReservePercent=25
+11-:-XX:InitiatingHeapOccupancyPercent=30
 
-# disable calls to System#gc
--XX:+DisableExplicitGC
-
-# pre-touch memory pages used by the JVM during initialization
--XX:+AlwaysPreTouch
-
-## basic
-
-# force the server VM (remove on 32-bit client JVMs)
--server
-
-# explicitly set the stack size (reduce to 320k on 32-bit client JVMs)
--Xss1m
-
-# set to headless, just in case
--Djava.awt.headless=true
-
-# ensure UTF-8 encoding by default (e.g. filenames)
--Dfile.encoding=UTF-8
-
-# use our provided JNA always versus the system one
--Djna.nosys=true
-
-# use old-style file permissions on JDK9
--Djdk.io.permissionsUseCanonicalPath=true
-
-# flags to keep Netty from being unsafe
--Dio.netty.noUnsafe=true
--Dio.netty.noKeySetOptimization=true
-
-# log4j 2
--Dlog4j.shutdownHookEnabled=false
--Dlog4j2.disable.jmx=true
--Dlog4j.skipJansi=true
+## JVM temporary directory
+-Djava.io.tmpdir=${OPENSEARCH_TMPDIR}
 
 ## heap dumps
 
@@ -80,19 +58,38 @@
 # heap dumps are created in the working directory of the JVM
 -XX:+HeapDumpOnOutOfMemoryError
 
-# specify an alternative path for heap dumps
-# ensure the directory exists and has sufficient space
-#-XX:HeapDumpPath=${heap.dump.path}
+# specify an alternative path for heap dumps; ensure the directory exists and
+# has sufficient space
+#${heap.dump.path}
 
-## GC logging
+# specify an alternative path for JVM fatal error logs
+#${error.file}
 
-#-XX:+PrintGCDetails
-#-XX:+PrintGCTimeStamps
-#-XX:+PrintGCDateStamps
-#-XX:+PrintClassHistogram
-#-XX:+PrintTenuringDistribution
-#-XX:+PrintGCApplicationStoppedTime
+## JDK 8 GC logging
+8:-XX:+PrintGCDetails
+8:-XX:+PrintGCDateStamps
+8:-XX:+PrintTenuringDistribution
+8:-XX:+PrintGCApplicationStoppedTime
+8:-Xloggc:${loggc}
+8:-XX:+UseGCLogFileRotation
+8:-XX:NumberOfGCLogFiles=32
+8:-XX:GCLogFileSize=64m
 
-# log GC status to a file with time stamps
-# ensure the directory exists
-#-Xloggc:${loggc}
+# JDK 9+ GC logging
+9-:-Xlog:gc*,gc+age=trace,safepoint:file=${loggc}:utctime,pid,tags:filecount=32,filesize=64m
+
+# JDK 20+ Incubating Vector Module for SIMD optimizations;
+# disabling may reduce performance on vector optimized lucene
+20-:--add-modules=jdk.incubator.vector
+
+# See please https://bugs.openjdk.org/browse/JDK-8341127 (openjdk/jdk#21283)
+23:-XX:CompileCommand=dontinline,java/lang/invoke/MethodHandle.setAsTypeCache
+23:-XX:CompileCommand=dontinline,java/lang/invoke/MethodHandle.asTypeUncached
+
+21-:-javaagent:agent/opensearch-agent.jar
+21-:--add-opens=java.base/java.nio=org.apache.arrow.memory.core,ALL-UNNAMED
+
+# For cases with high memory-mapped file counts, a lower value can improve stability and
+# prevent issues like "leaked" maps or performance degradation. A value of 1 effectively
+# disables the shared Arena pooling and uses a confined Arena for each MMapDirectory
+-Dorg.apache.lucene.store.MMapDirectory.sharedArenaMaxPermits=1
