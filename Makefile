@@ -1,9 +1,9 @@
 -include env_make
 
-OPENSEARCH_VER ?= 2.19.4
+OPENSEARCH_VER ?= 3.2.0
 OPENSEARCH_MINOR_VER=$(shell echo "${OPENSEARCH_VER}" | grep -oE '^[0-9]+\.[0-9]+')
 
-OPENJDK_VER ?= 17
+OPENJDK_VER ?= 21
 BASE_IMAGE_TAG ?= $(OPENJDK_VER)-jre-alpine
 
 # Remove minor version from tag

@@ -53,7 +53,7 @@ RUN set -ex; \
     cd /tmp; \
     [ -f es.tar.gz ] || curl -o es.tar.gz -Lskj "${es_url}"; \
     curl -o es.tar.gz.sig -Lskj "${es_url}.sig"; \
-    GPG_KEYS=C5B7498965EFD1C2924BA9D539D319879310D3FC gpg_verify /tmp/es.tar.gz.sig /tmp/es.tar.gz; \
+    GPG_KEYS=A8B2D9E04CD51FEF6AA2DB53BA81D99981191457 gpg_verify /tmp/es.tar.gz.sig /tmp/es.tar.gz; \
     \
     mkdir -p /usr/share/opensearch/data /usr/share/opensearch/logs /snapshots; \
     # https://github.com/elastic/opensearch/issues/49417#issuecomment-557265783
