@@ -73,7 +73,7 @@ RUN set -ex; \
 # We have to use root as default user to update ulimit.
 #USER 1000
 
-RUN apk add --no-cache openssl
+RUN apk add --no-cache openssl jq
 
 WORKDIR /usr/share/opensearch
 

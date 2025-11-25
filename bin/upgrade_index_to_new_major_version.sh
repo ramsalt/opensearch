@@ -19,7 +19,7 @@ ALIASES=$(${CURL} ${CT} "${OS}/${INDEX}/*" \
     | jq -r ".[].aliases | keys | .[]")
 
 # re-index into temporary index
-echo "Reindexing into temporary index..."
+echo "Reindexing into temporary index ${TMP_INDEX}..."
 ${CURL} -X POST ${CT} "${OS}/_reindex?pretty&wait_for_completion=true" -d '
 {
   "source":{

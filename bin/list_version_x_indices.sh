@@ -16,4 +16,4 @@ ${CURL} ${CT} "${OS}/*/_settings?expand_wildcards=all&include_defaults=false&hum
         | sort
 
 echo
-echo "These indices will need to be re-index before upgrading to the next major version!"
+echo "These indices will need to be re-index before upgrading to version $((VERSION_X + 2)).x.y!"
