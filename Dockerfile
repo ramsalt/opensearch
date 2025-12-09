@@ -70,6 +70,9 @@ RUN set -ex; \
     rm -rf /tmp/*; \
     rm -rf /var/cache/apk/*
 
+RUN rm /usr/share/opensearch/config/opensearch.keystore; \
+    ln -s /usr/share/opensearch/data/opensearch.keystore /usr/share/opensearch/config/opensearch.keystore
+
 # We have to use root as default user to update ulimit.
 #USER 1000
 
