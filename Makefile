@@ -1,6 +1,6 @@
 -include env_make
 
-OPENSEARCH_VER ?= 3.5.0
+OPENSEARCH_VER ?= 3.6.0
 OPENSEARCH_MINOR_VER=$(shell echo "${OPENSEARCH_VER}" | grep -oE '^[0-9]+\.[0-9]+')
 
 OPENJDK_VER ?= 21
