@@ -110,4 +110,6 @@ plugins.security.allow_default_init_securityindex: true
 
 plugins.query.datasources.encryption.masterkey: "{{ getenv "MASTERKEY" "MASTERKEY" }}"
 
+plugins.security.audit.type: internal_opensearch
+
 path.repo: ["/snapshots"]
